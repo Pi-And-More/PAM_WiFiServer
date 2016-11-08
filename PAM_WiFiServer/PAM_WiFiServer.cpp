@@ -31,7 +31,7 @@ WiFiClient client;
 String keepRequestString = "";
 
 //
-// Start the webserver
+// Start the webserver. This needs to be called once, for example in setup()
 //
 void wifiServerStart() {
   server.begin();
@@ -39,7 +39,7 @@ void wifiServerStart() {
 
 //
 // Send a page back to the client. The page is retrieved from the file system and
-// parse line by line where parameters are replaced by the corresponding values.
+// parsed line by line where parameters are replaced by the corresponding values.
 //
 // The page with page name pageName is retrieved from the file system. The function
 // expects the two arrays, paramName and paramValue to be of the same length, paramCount.
@@ -97,6 +97,11 @@ void serverSendPage () {
   serverSendPage(keepRequestString,keepRequestString,0,"index.htm");
 }
 
+//
+// Check whether there is a page requested from a client
+// True is returned if a page is requested after which the main
+// program should call a version of serverSendPage()
+//
 bool serverRequestReceived() {
   client = server.available();
   if (client) {
