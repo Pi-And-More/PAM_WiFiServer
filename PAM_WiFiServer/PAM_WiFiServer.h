@@ -15,6 +15,7 @@ void serverSendPage(String[], String[], int, String);
 void serverSendPage(String[], String[], int);
 void serverSendPage(String);
 void serverSendPage();
+void serverSendRedirect (String);
 String uriRequested ();
 String pageRequested ();
 String giveURLParam (String);

@@ -11,6 +11,10 @@
 //
 #include <PAM_WiFiServer.h>
 //
+// Include the PAM_Tools library
+//
+#include <PAM_Tools.h>
+//
 // Include the FileSytem library
 //
 #include <FS.h>
@@ -41,6 +45,8 @@ void wifiServerStart() {
 // Send a page back to the client. The page is retrieved from the file system and
 // parsed line by line where parameters are replaced by the corresponding values.
 //
+// The default page name, if none is given, is index.htm
+//
 // The page with page name pageName is retrieved from the file system. The function
 // expects the two arrays, paramName and paramValue to be of the same length, paramCount.
 //
@@ -52,13 +58,17 @@ void wifiServerStart() {
 void serverSendPage (String paramName[], String paramValue[], int paramCount, String pageName) {
   if (client) {
     toolsSetup();
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: text/html");
-    client.println("Connection: close");
-    client.println();
-    client.println("<!DOCTYPE HTML>");
-    if (SPIFFS.exists("/page/"+pageName)) {
-      File f = SPIFFS.open("/page/"+pageName,"r");
+    String sendThis = pageName;
+    if (pageName.length()==0 || pageName=="/") {
+      sendThis = "/index.htm";
+    }
+    if (SPIFFS.exists("/page"+sendThis)) {
+      client.println("HTTP/1.1 200 OK");
+      client.println("Content-Type: text/html");
+      client.println("Connection: close");
+      client.println();
+      client.println("<!DOCTYPE HTML>");
+      File f = SPIFFS.open("/page"+sendThis,"r");
       while(f.available()) {
         String line = f.readStringUntil('\n');
         if (line.indexOf('%')!=-1) {
@@ -68,6 +78,27 @@ void serverSendPage (String paramName[], String paramValue[], int paramCount, St
         }
         client.println(line);
       }
+    } else {
+      client.println("HTTP/1.0 404 Not Found");
+      client.println("Content-Type: text/html");
+      client.println("Connection: close");
+      client.println();
+      client.println("<!DOCTYPE HTML>");
+      if (SPIFFS.exists("/page/404.htm")) {
+        File f = SPIFFS.open("/page/404.htm","r");
+        while(f.available()) {
+          String line = f.readStringUntil('\n');
+          if (line.indexOf('%')!=-1) {
+            line.replace("%page%",sendThis);
+          }
+          client.println(line);
+        }
+      } else {
+        client.println("<html><head><title>Not Found</title></head><body>");
+        client.println("<h2>Sorry, the page you requested, <font color=red>");
+        client.println(sendThis);
+        client.println("</font>, was not found.</h2></body><html>");
+      }
     }
     delay(1);
     client.stop();
@@ -75,26 +106,49 @@ void serverSendPage (String paramName[], String paramValue[], int paramCount, St
 }
 
 //
-// If no pagename is given, it is assumed to be index.htm
+// Redirect the browser to another location. This can be convenient for example
+// if you receive requests through a HTTP GET and you don't want the user to
+// send the same info again. In that case, process the GET request and redirect
+// to another page (or the same page without GET parameters)
+//
+void serverSendRedirect (String newLocation) {
+  if (client) {
+    toolsSetup();
+    client.println("HTTP/1.1 307 Temporary Redirect");
+    client.print("Location: ");
+    client.println(newLocation);
+    client.println("Connection: close");
+    client.println();
+    delay(1);
+    client.stop();
+  }
+}
+
+
+//
+// If no pagename is given, it is assumed that the page requested
+// has to be send.
 //
 void serverSendPage (String paramName[], String paramValue[], int paramCount) {
-  serverSendPage(paramName,paramValue,paramCount,"index.htm");
+  serverSendPage(paramName,paramValue,paramCount,pageRequested());
 }
 
 //
 // If no parameters are given, it is assumed that no parameter
-// replacement is needed.
+// replacement is needed and that the requested page needs to be send.
 //
 void serverSendPage (String pageName) {
-  serverSendPage(requestString,RequestString,0,pageName);
+  String tmp[1] = { "" };
+  serverSendPage(tmp,tmp,0,pageName);
 }
 
 //
-// if no pagename and no parameters are given, it is assumed to be index.htm
-// where no parameter replacement is needed.
+// if no pagename and no parameters are given, it is assumed that the page
+// requested has to be send where no parameter replacement is needed.
 //
 void serverSendPage () {
-  serverSendPage(keepRequestString,keepRequestString,0,"index.htm");
+  String tmp[1] = { "" };
+  serverSendPage(tmp,tmp,0,pageRequested());
 }
 
 //
@@ -149,6 +203,9 @@ String pageRequested () {
   String t = uriRequested();
   if (t.indexOf("?")>=0) {
     t = t.substring(0,t.indexOf("?"));
+  }
+  if (t.length()==0) {
+    t = "index.html";
   }
   return t;
 }

@@ -2,9 +2,9 @@ PAM_WiFiServer	KEYWORD2
 wifiServerStart	KEYWORD2
 serverRequestReceived	KEYWORD2
 serverSendPage	KEYWORD2
-requestString	KEYWORD2
 uriRequested	KEYWORD2
 pageRequested	KEYWORD2
 giveURLParam	KEYWORD2
+serverSendRedirect	KEYWORD2
 
 PARAMNOTFOUND	LITERAL1
