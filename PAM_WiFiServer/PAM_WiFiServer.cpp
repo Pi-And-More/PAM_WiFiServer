@@ -59,8 +59,11 @@ void serverSendPage (String paramName[], String paramValue[], int paramCount, St
   if (client) {
     toolsSetup();
     String sendThis = pageName;
-    if (pageName.length()==0 || pageName=="/") {
+    if (sendThis.length()==0 || sendThis=="/") {
       sendThis = "/index.htm";
+    }
+    if (sendThis.charAt(0)!='/') {
+      sendThis = "/"+sendThis;
     }
     if (SPIFFS.exists("/page"+sendThis)) {
       client.println("HTTP/1.1 200 OK");
