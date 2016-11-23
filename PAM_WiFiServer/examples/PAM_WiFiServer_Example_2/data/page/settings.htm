@@ -1,0 +1,10 @@
+The name for this temperature logger can be filled in at <b>Module name</b><br>
+The temperature logger allows you to log your temperature to a <a href='http://thingspeak.comm'>ThingSpeak channel</a>.
+To use this, you enter the API key in the field called <b>ThingSpeak API</b>.<br>
+The temperature logger can also tell you when it comes online or when it has errors through an <a href='http://ifttt.com'>IFTTT (If This Than That) Maker event</a>.
+To use this you have to enter the IFTTT API key in the field called <b>IFTTT API</b> and define the event to trigger at boot, <b>IFTTT boot event</b>, and which to trigger when an error message needs to be send <b>IFTTT msg event</b>.<br>
+<br>
+There are 2 more paramenters to configure the usage, <b>Upload every x 100ms</b> determines how frequently the data is uploaded to ThingSpeak (assuming that you have filled in the key). A value of 600 means 600 x 100 ms = 60,000 ms = 60 seconds.<br>
+The other parameter is <b>Alert every x errors</b> which determines how frequently an error message is send to IFTTT (provided you have entered the IFTTT key and the IFTTT message event).<br>
+<br>
+<br>

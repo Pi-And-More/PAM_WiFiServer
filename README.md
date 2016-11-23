@@ -66,4 +66,18 @@ String pageRequested ()
 //
 String giveURLParam (String search)
 
+//
+// This function will check whether the page settings.htm was requested
+// and if so, generate a settings page based on the vars in the file system.
+// It will also handle modifying the settings use the PAM_Tools library.
+// If you want to include some description, you can put that section
+// on the filesystem as /page/settings.htm and it will include that
+// directly after the header.
+// If the page requested is not processed, it will return a false
+// so you know to handle the page further on in the code.
+// The idea behind this function is that it is always called if you have
+// a page request and only handle the page if it returns false.
+//
+bool pageSettings (String modulename)
+
 You can read about it in more detail on https://piandmore.wordpress.com/tag/pam_wifiserver/

@@ -19,5 +19,6 @@ void serverSendRedirect (String);
 String uriRequested ();
 String pageRequested ();
 String giveURLParam (String);
+bool pageSettings (String);
 
 #endif

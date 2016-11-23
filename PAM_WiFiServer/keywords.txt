@@ -6,5 +6,6 @@ uriRequested	KEYWORD2
 pageRequested	KEYWORD2
 giveURLParam	KEYWORD2
 serverSendRedirect	KEYWORD2
+pageSettings	KEYWORD2
 
 PARAMNOTFOUND	LITERAL1

@@ -4,6 +4,7 @@
 //              PAM_WiFiServer library
 //
 // https://piandmore.wordpress.com/tag/pam_wifiserver
+// Example 1: very basic webserver example
 //
 //////////////////////////////////////////////////////////////////////
 //
